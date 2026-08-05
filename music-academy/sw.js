@@ -1,4 +1,4 @@
-const CACHE_NAME = 'academy-app-v1';
+const CACHE_NAME = 'academy-app-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -14,6 +14,9 @@ const APP_SHELL = [
   './js/progress.js',
   './js/dashboard.js',
   './js/settings.js',
+  './js/router.js',
+  './js/modal.js',
+  './js/state.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png'
@@ -33,20 +36,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// 네트워크 우선: 온라인이면 항상 최신 파일을 받아오고, 오프라인일 때만 캐시를 사용합니다.
+// (배포한 새 버전이 기기에 바로 반영되도록 하기 위함)
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request)
-        .then((response) => {
-          if (response.ok && response.type === 'basic') {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => cached);
-    })
+    fetch(event.request)
+      .then((response) => {
+        if (response.ok && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

@@ -23,4 +23,12 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('SW 등록 실패', err));
   });
+  // 새 버전이 배포되어 서비스워커가 교체되면, 열려있던 화면도 자동으로 새로고침해서
+  // 최신 화면(레이아웃 수정 등)이 바로 반영되도록 합니다.
+  let reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloaded) return;
+    reloaded = true;
+    location.reload();
+  });
 }
