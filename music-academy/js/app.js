@@ -1,11 +1,12 @@
 import { DB } from './db.js';
 import { initRouter } from './router.js';
-import { appState } from './state.js';
+import { appState, DEFAULT_ACADEMY_NAME } from './state.js';
+import { setHeaderTitle } from './utils.js';
 
 async function init() {
   const nameRec = await DB.get('settings', 'academyName');
-  appState.academyName = nameRec?.value || '음악학원';
-  document.getElementById('app-title').textContent = `${appState.academyName} 원생관리`;
+  appState.academyName = nameRec?.value || DEFAULT_ACADEMY_NAME;
+  setHeaderTitle(appState.academyName);
 
   const container = document.getElementById('app-content');
   const nav = document.getElementById('bottom-nav');

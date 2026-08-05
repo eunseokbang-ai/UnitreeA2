@@ -114,6 +114,12 @@ export function debounce(fn, wait = 250) {
   };
 }
 
+export function setHeaderTitle(name) {
+  const el = document.getElementById('app-title');
+  if (el) el.textContent = `🎹 ${name} 원생관리`;
+  document.title = `${name} 원생관리`;
+}
+
 export function toast(msg, ms = 2200) {
   let el = document.getElementById('toast');
   if (!el) {

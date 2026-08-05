@@ -1,7 +1,7 @@
 import { DB } from './db.js';
-import { toast } from './utils.js';
+import { toast, setHeaderTitle } from './utils.js';
 import { testWebhook } from './sms.js';
-import { appState } from './state.js';
+import { appState, DEFAULT_ACADEMY_NAME } from './state.js';
 
 export async function render(root) {
   const [academyName, reminderDays, webhookUrl, autoOpen] = await Promise.all([
@@ -16,7 +16,7 @@ export async function render(root) {
 
     <section class="settings-section">
       <h3>학원 정보</h3>
-      <label>학원명<input id="s-academyName" value="${academyName?.value || ''}" placeholder="예: 도레미음악학원" /></label>
+      <label>학원명<input id="s-academyName" value="${academyName?.value || DEFAULT_ACADEMY_NAME}" placeholder="예: 도레미음악학원" /></label>
       <label>원비 알림 기준일 (며칠 전부터 알림)
         <input type="number" min="0" max="14" id="s-reminderDays" value="${reminderDays?.value ?? 3}" />
       </label>
@@ -73,13 +73,12 @@ export async function render(root) {
   `;
 
   root.querySelector('#save-general').addEventListener('click', async () => {
-    const name = root.querySelector('#s-academyName').value.trim() || '음악학원';
+    const name = root.querySelector('#s-academyName').value.trim() || DEFAULT_ACADEMY_NAME;
     const days = Number(root.querySelector('#s-reminderDays').value) || 0;
     await DB.put('settings', { key: 'academyName', value: name });
     await DB.put('settings', { key: 'reminderDays', value: days });
     appState.academyName = name;
-    const titleEl = document.getElementById('app-title');
-    if (titleEl) titleEl.textContent = `${name} 원생관리`;
+    setHeaderTitle(name);
     toast('저장되었습니다.');
   });
 

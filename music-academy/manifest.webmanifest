@@ -1,6 +1,6 @@
 {
-  "name": "음악학원 원생관리",
-  "short_name": "원생관리",
+  "name": "라니음악학원 원생관리",
+  "short_name": "라니음악학원",
   "description": "음악학원 원생 출결/원비/진도 관리 앱",
   "start_url": "./index.html",
   "scope": "./",
